@@ -6,7 +6,7 @@
 #include <Windows.h>
 using namespace std;
 
-std::ofstream ofs ("permute.csv", std::ofstream::app);
+std::ofstream ofs;
 
 static int p=0, w=0;
 
@@ -14,9 +14,19 @@ void moveUpNLines(int n) {
     CONSOLE_SCREEN_BUFFER_INFO coninfo;
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     GetConsoleScreenBufferInfo(hConsole, &coninfo);
-    coninfo.dwCursorPosition.Y -= n;    // move up one line
-    coninfo.dwCursorPosition.X = 0;    // move to the right the length of the word
+
+    // Go up N lines
+    coninfo.dwCursorPosition.Y -= n;
+    coninfo.dwCursorPosition.X = 0;
     SetConsoleCursorPosition(hConsole, coninfo.dwCursorPosition);
+
+    // Print N new lines, clear N lines
+    // for(int k=0; k<n; k++) cout<<'\n';
+
+    // // Go up N lines again
+    // coninfo.dwCursorPosition.Y -= n;
+    // coninfo.dwCursorPosition.X = 0;
+    // SetConsoleCursorPosition(hConsole, coninfo.dwCursorPosition);
 }
 
 void swap(char *x, char *y) 
@@ -48,9 +58,17 @@ void permute(char *a, int l, int r)
 
 int main()
 {
-    char arr[10] = { 'A', 'Z', 'O', 'Z', 'I', 'A', 'D', 'N', 'K', 'X'};
+    char arr[10] = { 'A', 'Z', 'O', 'Z', 'I', 'A', 'D', 'N', 'K', 'X' };
     char str[10] = {};
     int p = 1<<10;
+
+    char ch[2];
+    cout<<"Append(ap) or Overwrite(ow)?...";
+    cin>>ch;
+    if(strcmp(ch, "ap")==0) ofs.open("names.csv", std::ofstream::app);
+    else if(strcmp(ch, "ow")==0) ofs.open("names.csv", std::ofstream::out);
+    //moveUpNLines(2);
+
     for(int n=0; n<p; n++) {
         vector<char> sel;
         if(__builtin_popcount(n)<4) continue;
